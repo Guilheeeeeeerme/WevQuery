@@ -6,10 +6,9 @@ ARG MONGO_INITDB_ROOT_USERNAME
 ARG MONGO_INITDB_ROOT_PASSWORD
 ARG MONGO_INITDB_DATABASE
 
-WORKDIR /base
-
-RUN echo "mongorestore -u ${MONGO_INITDB_ROOT_USERNAME} -p \"${MONGO_INITDB_ROOT_PASSWORD}\" --authenticationDatabase admin ." > entrypoint.sh
-COPY --from=builder /var/lib/base/* .
+COPY --from=builder /var/lib/base/* /base
+RUN echo "mongorestore -u ${MONGO_INITDB_ROOT_USERNAME} -p \"${MONGO_INITDB_ROOT_PASSWORD}\" --authenticationDatabase admin ." > /base/entrypoint.sh
+RUN chmod +x /base/entrypoint.sh
 
 # RUN echo "#!/bin/bash" > entrypoint.sh
 # RUN echo "set -e" >> entrypoint.sh
