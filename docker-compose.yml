@@ -28,6 +28,7 @@ services:
         image: wevquery/core
         build: 
           context: .
+          dockerfile: ./docker/core.dockerfile
           args:
             MONGO_INITDB_ROOT_USERNAME: '${MONGO_ROOT_USERNAME}'
             MONGO_INITDB_ROOT_PASSWORD: '${MONGO_ROOT_PASSWORD}'
@@ -35,6 +36,25 @@ services:
         container_name: wevquery-core
         ports: 
             - "2929:2929"
+        networks: 
+            - wevquery
+        restart: always
+        depends_on: 
+            - mongo
+
+    capture:
+        image: wevquery/capture
+        build: 
+          context: .
+          dockerfile: ./docker/capture.dockerfile
+          args:
+            MONGO_INITDB_ROOT_USERNAME: '${MONGO_ROOT_USERNAME}'
+            MONGO_INITDB_ROOT_PASSWORD: '${MONGO_ROOT_PASSWORD}'
+            MONGO_INITDB_DATABASE: '${MONGO_DATABASE}'
+            WEVQUERY_HOST: '${WEVQUERY_HOST}'
+        container_name: wevquery-capture
+        ports: 
+            - "2727:2727"
         networks: 
             - wevquery
         restart: always
