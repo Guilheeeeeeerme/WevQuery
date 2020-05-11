@@ -26,6 +26,9 @@ RUN bash rename.sh
 
 WORKDIR /app
 
+
+RUN echo "options.bindIP = '0.0.0.0';" >> options.js
+
 # RUN echo "sed -i 's/CAPTURESERVERADDRESS/${WEVQUERY_HOST}/g' deploymentScript.html" > rename.sh
 # RUN bash rename.sh
 
