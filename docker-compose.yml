@@ -1,0 +1,63 @@
+version: "3.7"
+
+volumes: 
+    mongo-data:
+
+networks:
+    wevquery:
+        name: wevquery_network
+
+services:
+
+    mongo:
+        image: mongo:3.6
+        container_name: wevquery-mongo
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: '${MONGO_ROOT_USERNAME}'
+            MONGO_INITDB_ROOT_PASSWORD: '${MONGO_ROOT_PASSWORD}'
+            MONGO_INITDB_DATABASE: '${MONGO_DATABASE}'
+        ports: 
+            - "27017:27017"
+        volumes:
+            - "mongo-data:/data/db"
+        networks: 
+            - wevquery
+        restart: always
+
+    core:
+        image: wevquery/core
+        build: 
+          context: .
+          dockerfile: ./docker/core.dockerfile
+          args:
+            MONGO_INITDB_ROOT_USERNAME: '${MONGO_ROOT_USERNAME}'
+            MONGO_INITDB_ROOT_PASSWORD: '${MONGO_ROOT_PASSWORD}'
+            MONGO_INITDB_DATABASE: '${MONGO_DATABASE}'
+        container_name: wevquery-core
+        ports: 
+            - "2929:2929"
+        networks: 
+            - wevquery
+        restart: always
+        depends_on: 
+            - mongo
+
+    capture:
+        image: wevquery/capture
+        build: 
+          context: .
+          dockerfile: ./docker/capture.dockerfile
+          args:
+            MONGO_INITDB_ROOT_USERNAME: '${MONGO_ROOT_USERNAME}'
+            MONGO_INITDB_ROOT_PASSWORD: '${MONGO_ROOT_PASSWORD}'
+            MONGO_INITDB_DATABASE: '${MONGO_DATABASE}'
+            WEVQUERY_HOST: '${WEVQUERY_HOST}'
+        container_name: wevquery-capture
+        ports: 
+            - "2727:2727"
+        networks: 
+            - wevquery
+        restart: always
+        depends_on: 
+            - mongo
+            
