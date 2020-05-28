@@ -6,6 +6,8 @@ volumes:
 networks:
     wevquery:
         name: wevquery_network
+    footstep:
+        name: footstep
 
 services:
 
@@ -22,6 +24,7 @@ services:
             - "mongo-data:/data/db"
         networks: 
             - wevquery
+            - footstep
         restart: always
 
     core:
@@ -38,6 +41,7 @@ services:
             - "2929:2929"
         networks: 
             - wevquery
+            - footstep
         restart: always
         depends_on: 
             - mongo
@@ -57,6 +61,7 @@ services:
             - "2727:2727"
         networks: 
             - wevquery
+            - footstep
         restart: always
         depends_on: 
             - mongo
